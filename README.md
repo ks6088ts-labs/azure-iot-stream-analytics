@@ -1,4 +1,4 @@
-[![test](https://github.com/ks6088ts-labs/azure-iot-stream-analytics/workflows/test/badge.svg)](https://github.com/ks6088ts-labs/azure-iot-stream-analytics/actions/workflows/test.yml)
+[![infra](https://github.com/ks6088ts-labs/azure-iot-stream-analytics/workflows/infra/badge.svg)](https://github.com/ks6088ts-labs/azure-iot-stream-analytics/actions/workflows/infra.yml)
 
 # Azure IoT Stream Analytics
 
