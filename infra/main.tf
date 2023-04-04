@@ -29,3 +29,13 @@ module "iothub" {
   tags        = merge(local.tags, { "${var.environment_name}" : "iothub" })
   iothub_name = "iothub${local.resource_token}"
 }
+# ------------------------------------------------------------------------------------------------------
+# Storage Account
+# ------------------------------------------------------------------------------------------------------
+module "storage_account" {
+  source          = "./modules/storage-account"
+  location        = var.location
+  rg_name         = azurerm_resource_group.rg.name
+  tags            = merge(local.tags, { "${var.environment_name}" : "storage-account" })
+  storage_account = "sa${local.resource_token}"
+}
