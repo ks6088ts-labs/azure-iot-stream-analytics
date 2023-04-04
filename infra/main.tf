@@ -19,3 +19,13 @@ resource "azurerm_resource_group" "rg" {
 
   tags = local.tags
 }
+# ------------------------------------------------------------------------------------------------------
+# IoT Hub
+# ------------------------------------------------------------------------------------------------------
+module "iothub" {
+  source      = "./modules/iothub"
+  location    = var.location
+  rg_name     = azurerm_resource_group.rg.name
+  tags        = merge(local.tags, { "${var.environment_name}" : "iothub" })
+  iothub_name = "iothub${local.resource_token}"
+}
