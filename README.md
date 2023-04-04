@@ -1,4 +1,4 @@
-[![test](https://github.com/ks6088ts-labs/azure-iot-stream-analytics/workflows/test/badge.svg)](https://github.com/ks6088ts-labs/azure-iot-stream-analytics/actions/workflows/test.yml)
+[![infra](https://github.com/ks6088ts-labs/azure-iot-stream-analytics/workflows/infra/badge.svg)](https://github.com/ks6088ts-labs/azure-iot-stream-analytics/actions/workflows/infra.yml)
 
 # Azure IoT Stream Analytics
 
@@ -10,11 +10,49 @@
 
 ## Get Started
 
-```shell
-# create resources
-azd up --environment iot-stream-analytics
+### Create resources
 
-# delete resources
+```shell
+azd up --environment iot-stream-analytics
+```
+
+### Play with Azure IoT Stream Analytics
+
+Run the following commands in your local environment.
+
+```shell
+# Set parameters
+IOTHUB_NAME=$(terraform output -state=.azure/iot-stream-analytics/infra/terraform.tfstate -raw iothub_name)
+STREAM_ANALYTICS_JOB_NAME=$(terraform output -state=.azure/iot-stream-analytics/infra/terraform.tfstate -raw stream_analytics_job_name)
+DEVICE_NAME="myDevice"
+
+# Create a device identity
+az iot hub device-identity create \
+    --hub-name $IOTHUB_NAME \
+    --device-id $DEVICE_NAME
+
+# Get the device connection string
+CONNECTION_STRING=$(az iot hub device-identity connection-string show \
+    --hub-name $IOTHUB_NAME \
+    --device-id $DEVICE_NAME \
+    --query "connectionString" \
+    --output tsv)
+
+# Start stream analytics job
+az stream-analytics job start \
+    --job-name $STREAM_ANALYTICS_JOB_NAME \
+    --resource-group rg-iot-stream-analytics
+```
+
+To send mock data run the following procedures in your local environment.
+1. Open [Raspberry Pi Azure IoT Online Simulator](https://azure-samples.github.io/raspberry-pi-web-simulator/)
+1. Override `connectionString` to `$CONNECTION_STRING` of your device connection string
+1. Click `Start` to send data
+1. Go to storage container to see the data
+
+### Clean up resources
+
+```shell
 azd down --force
 ```
 

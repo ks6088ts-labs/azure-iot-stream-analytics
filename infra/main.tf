@@ -19,3 +19,38 @@ resource "azurerm_resource_group" "rg" {
 
   tags = local.tags
 }
+# ------------------------------------------------------------------------------------------------------
+# IoT Hub
+# ------------------------------------------------------------------------------------------------------
+module "iothub" {
+  source      = "./modules/iothub"
+  location    = var.location
+  rg_name     = azurerm_resource_group.rg.name
+  tags        = merge(local.tags, { "${var.environment_name}" : "iothub" })
+  iothub_name = "iothub${local.resource_token}"
+}
+# ------------------------------------------------------------------------------------------------------
+# Storage Account
+# ------------------------------------------------------------------------------------------------------
+module "storage_account" {
+  source          = "./modules/storage-account"
+  location        = var.location
+  rg_name         = azurerm_resource_group.rg.name
+  tags            = merge(local.tags, { "${var.environment_name}" : "storage-account" })
+  storage_account = "sa${local.resource_token}"
+}
+# ------------------------------------------------------------------------------------------------------
+# Deploy Stream Analytics
+# ------------------------------------------------------------------------------------------------------
+module "stream_analytics" {
+  source                          = "./modules/stream-analytics"
+  location                        = var.location
+  rg_name                         = azurerm_resource_group.rg.name
+  tags                            = merge(local.tags, { "${var.environment_name}" : "stream-analytics" })
+  job_name                        = "job${local.resource_token}"
+  iothub_namespace                = module.iothub.name
+  iothub_shared_access_policy_key = module.iothub.primary_key
+  storage_account_name            = module.storage_account.storage_account_name
+  storage_account_key             = module.storage_account.storage_account_key
+  storage_container_name          = module.storage_account.storage_container_name
+}
