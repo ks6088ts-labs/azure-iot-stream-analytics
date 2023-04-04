@@ -2,8 +2,8 @@
 
 name: azure-iot-stream-analytics
 infra:
-    provider: ""
-    path: ""
-    module: ""
+    provider: terraform
+    path: ./infra
+    module: main
 pipeline:
-    provider: ""
+    provider: github
